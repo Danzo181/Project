@@ -17,9 +17,6 @@ class Card():
     def __repr__(self):
         return f"Card: {self.name} of {self.suits[self.suit]} "
 
-    def same_suit(self, other):
-        return self.suit == other.suit
-
     def __eq__(self,other):
         return self.value == other.value
 
@@ -32,6 +29,7 @@ class Card():
 class Deck():
     def __init__(self):
         self.deck = []
+        self.table_hand = []
         for suit in Card.suits:
             for value in Card.values:
                 current_card= Card(value,suit)
@@ -43,13 +41,27 @@ class Deck():
     def deal_hand(self):
         return self.deck.pop(0)
 
+    def deal_flop(self):
+        for i in range(3):
+            self.table_hand.append(self.deck.pop(0))
+        return self.table_hand
+
+    def deal_turn(self):
+        self.table_hand.append(self.deck.pop(0))
+        return self.table_hand
+
+    def deal_river(self):
+        self.table_hand.append(self.deck.pop(0))
+        return self.table_hand
+
 class Table():
-    def __init__(self,hands_num):
+    def __init__(self,hands_num,bank_amount=1500):
         self.deck = Deck()
         self.deck.shuffle()
         self.hands = []
         self.hands_num = hands_num
-        self.player_lst = []
+        self.player_lst = {}
+        self.bank_amount = bank_amount
 
         for i in range(hands_num):
             hand =[]
@@ -61,22 +73,43 @@ class Table():
     def players_assign(self):
         for i in range(self.hands_num):
             p_name = input("enter player name: ")
-            self.player_lst.append(p_name)
+            self.player_lst[p_name] = self.bank_amount
         return self.player_lst
 
 
+class Game():
+    def __init__(self,rounds,blinds = 20):
+        self.table = Table(5)
+        self.num_rounds = rounds
+        self.blinds = blinds
+        self.pot_amount = 0
+        self.current_raise = 0
+        self.current_player = 0
 
+    def Check(self,player_name):
+        self.table.player_lst[player_name] -= self.blinds
+        self.pot_amount += self.blinds
+        return "check"
 
+    def Raise(self,player_name):
+        self.current_raise = input("Enter amount to raise by: ")
+        self.table.player_lst[player_name] -= self.current_raise
+        self.pot_amount += self.current_raise
 
+    def Fold(self):
+        return "Fold"
 
-class Player():
-    def __init__(self,name,bank=1500):
-        self.name = name
-        self.bank = bank
-
-    def hand(self):
-        self.hand = []
-
+    def betting(self):
+        for i in range(len(self.table.player_lst)):
+            play = input("Enter play c/r/f: ")
+            if play == "c":
+                self.Check(self.table.player_lst[self.current_player])
+            elif play == "r":
+                self.Raise(self.table.player_lst[self.current_player])
+            elif play == "f":
+                self.Fold()
+            else:
+                raise ValueError("Invalid input")
 
 
 tab = Table(3)
