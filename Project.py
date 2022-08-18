@@ -66,6 +66,7 @@ class Table():
         self.player_keys = []
         self.bank_amount = bank_amount
 
+
         for i in range(hands_num):
             hand =[]
             for i in range(2):
@@ -83,8 +84,8 @@ class Table():
         return self.hands[player_num]
 
 class Game():
-    def __init__(self,rounds,blinds = 20):
-        self.table = Table(5)
+    def __init__(self,players = 5, rounds = 5,blinds = 20):
+        self.table = Table(players)
         self.num_rounds = rounds
         self.blinds = blinds
         self.pot_amount = 0
@@ -93,6 +94,7 @@ class Game():
         self.current_player_lst = self.table.player_lst.copy()
         self.current_player_keys = self.table.player_keys.copy()
         self.current_play = 0
+        self.current_raise_player = len(self.current_player_lst)
 
     def change_item(self,player):
         self.table.player_lst[player] = self.current_player_lst[player]
@@ -101,21 +103,11 @@ class Game():
         self.current_player_lst[player_name] -= amount
         self.pot_amount += amount
 
-    def Check(self,player_num):
 
-        if self.current_play == 0 and self.current_raise == 0:
-            self.money_exchange(self.blinds, self.current_player_keys[player_num])
-            return "check"
-
-        else:
-            self.money_exchange(self.current_raise, self.current_player_keys[player_num])
-            return "check"
-
-    def Raise(self,player_num):
+    def Raise(self, player_num):
 
         self.current_raise = int(input("Enter amount to raise by: "))
-        self.money_exchange(self.current_raise, self.current_player_keys[player_num])
-        return self.current_raise
+        self.current_raise_player = player_num
 
     def Fold(self,player_num):
         del self.current_player_lst[self.current_player_keys[player_num]]
@@ -127,41 +119,50 @@ class Game():
 
         play = input("Enter play c/r/f: ")
 
-        if play == "c":
-            self.Check(self.current_player)
-        elif play == "r":
+        if play == "r":
             self.Raise(self.current_player)
         elif play == "f":
             self.Fold(self.current_player)
+        elif play == "c":
+            pass
         else:
             raise ValueError("Invalid input")
 
 
 
-def round(num_rounds):
+def round(current_game):
 
-    current_game = Game(num_rounds)
 
-    for i in range(len(current_game.table.player_lst)):
+    while current_game.current_raise_player != current_game.current_player:
+
         print(current_game.table.show_hand(current_game.current_player))
+
         current_game.betting()
         current_game.current_player += 1
 
+        if current_game.current_player + 1 > len(current_game.current_player_lst):
+            current_game.current_player = 0
+
     for i in current_game.current_player_lst:
+        current_game.money_exchange(current_game.current_raise,i)
         current_game.change_item(i)
 
     print(current_game.table.player_lst)
 
 
-    current_game.current_play += 1
     current_game.current_raise = 0
+    current_game.current_raise_player = len(current_game.current_player_lst)
+    current_game.current_player = 0
+    current_game.blinds = 0
 
 def main():
-    num_rounds = int(input("Rounds: "))
+    num_players = int(input("players: "))
 
-    for i in range(num_rounds):
+    current_game = Game(num_players)
 
-        round(num_rounds)
+    for i in range(num_players):
+
+        round(current_game)
 
 #Game(1)
 main()
@@ -170,4 +171,4 @@ main()
 #tab = Table(3)
 #card_KH = Card("K","H")
 #card_2S = Card("2","S")
-#deck = Deck()
+#deck = Deck
