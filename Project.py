@@ -94,9 +94,8 @@ class Game():
         self.current_player_keys = self.table.player_keys.copy()
         self.current_play = 0
 
-    def change_item(self,player_num):
-        self.table.player_lst[self.table.player_keys[player_num]] = self.current_player_lst[self.current_player_keys[player_num]]
-        print(self.table.player_lst)
+    def change_item(self,player):
+        self.table.player_lst[player] = self.current_player_lst[player]
 
     def money_exchange(self,amount,player_name):
         self.current_player_lst[player_name] -= amount
@@ -121,6 +120,7 @@ class Game():
     def Fold(self,player_num):
         del self.current_player_lst[self.current_player_keys[player_num]]
         self.current_player_keys.pop(player_num)
+        self.table.hands.pop(player_num)
         self.current_player -= 1
 
     def betting(self):
@@ -145,10 +145,10 @@ def round(num_rounds):
     for i in range(len(current_game.table.player_lst)):
         print(current_game.table.show_hand(current_game.current_player))
         current_game.betting()
-
-        current_game.change_item(current_game.current_player)
         current_game.current_player += 1
 
+    for i in current_game.current_player_lst:
+        current_game.change_item(i)
 
     print(current_game.table.player_lst)
 
