@@ -94,7 +94,7 @@ class Game():
         self.current_player_lst = self.table.player_lst.copy()
         self.current_player_keys = self.table.player_keys.copy()
         self.current_play = 0
-        self.current_raise_player = len(self.current_player_lst)
+        self.current_raise_player = len(self.current_player_lst) + 1
 
     def change_item(self,player):
         self.table.player_lst[player] = self.current_player_lst[player]
@@ -136,12 +136,16 @@ def round(current_game):
     while current_game.current_raise_player != current_game.current_player:
 
         print(current_game.table.show_hand(current_game.current_player))
+        print(current_game.table.deck.table_hand)
 
         current_game.betting()
         current_game.current_player += 1
 
         if current_game.current_player + 1 > len(current_game.current_player_lst):
             current_game.current_player = 0
+
+    if current_game.current_play == 0:
+
 
     for i in current_game.current_player_lst:
         current_game.money_exchange(current_game.current_raise,i)
@@ -160,9 +164,19 @@ def main():
 
     current_game = Game(num_players)
 
-    for i in range(num_players):
+    round(current_game)
 
-        round(current_game)
+    current_game.table.deck.deal_flop()
+
+    round(current_game)
+
+    current_game.table.deck.deal_turn()
+
+    round(current_game)
+
+    current_game.table.deck.deal_river()
+
+    round(current_game)
 
 #Game(1)
 main()
