@@ -89,12 +89,13 @@ class Game():
         self.num_rounds = rounds
         self.blinds = blinds
         self.pot_amount = 0
-        self.current_raise = 0
-        self.current_player = 0
+        self.current_raise = blinds
+        self.current_player = 1
+        self.dealer = 0
         self.current_player_lst = self.table.player_lst.copy()
         self.current_player_keys = self.table.player_keys.copy()
         self.current_play = 0
-        self.current_raise_player = len(self.current_player_lst) + 1
+        self.current_raise_player = len(self.table.player_lst) + 1
 
     def change_item(self,player):
         self.table.player_lst[player] = self.current_player_lst[player]
@@ -132,8 +133,10 @@ class Game():
 
 def round(current_game):
 
+    print(current_game.table.hands)
 
     while current_game.current_raise_player != current_game.current_player:
+
 
         print(current_game.table.show_hand(current_game.current_player))
         print(current_game.table.deck.table_hand)
@@ -144,8 +147,6 @@ def round(current_game):
         if current_game.current_player + 1 > len(current_game.current_player_lst):
             current_game.current_player = 0
 
-    if current_game.current_play == 0:
-
 
     for i in current_game.current_player_lst:
         current_game.money_exchange(current_game.current_raise,i)
@@ -153,11 +154,16 @@ def round(current_game):
 
     print(current_game.table.player_lst)
 
+    if current_game.dealer + 1 <= len(current_game.table.player_lst):
+        current_game.dealer += 1
+    else:
+        current_game.dealer = 0
 
     current_game.current_raise = 0
     current_game.current_raise_player = len(current_game.current_player_lst)
-    current_game.current_player = 0
+    current_game.current_player = current_game.dealer
     current_game.blinds = 0
+
 
 def main():
     num_players = int(input("players: "))
