@@ -6,7 +6,7 @@ class Card():
     values = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13,
               "A": 14}
 
-    def __init__(self, name, suit, value=None):
+    def __init__(self, name, suit):
         self.name = name
         if suit in self.suits:
             self.suit = suit
@@ -80,6 +80,7 @@ class Table():
 
         self.player_keys = list(self.player_lst.keys())
 
+
     def show_hand(self, player_num):
         return self.hands[player_num]
 
@@ -105,7 +106,6 @@ class Game():
         self.current_player_lst[player_name] -= amount
         self.pot_amount += amount
 
-
     def Raise(self, player_num):
 
         self.current_raise = int(input("Enter amount to raise by: "))
@@ -116,6 +116,9 @@ class Game():
         self.current_player_keys.pop(player_num)
         self.table.hands.pop(player_num)
         self.current_player -= 1
+
+        if self.current_player <= self.current_raise_player:
+            self.current_raise_player -= 1
 
     def betting(self):
 
@@ -132,15 +135,20 @@ class Game():
 
     def end_round(self):
 
-        if self.current_player == self.current_raise_player and self.passes > 0:
-            return False
+        self.dealer += 1
+        if self.dealer + 1 <= len(self.table.player_lst):
+            self.dealer += 1
         else:
-            return True
+            self.dealer = 0
 
+        print(f"The dealer is now {self.dealer}")
 
     def round(self):
 
         while self.current_player != self.current_raise_player or self.passes <= 0:
+            print(self.current_player)
+            print(self.current_raise_player)
+            print(self.current_player_lst)
             print(self.table.show_hand(self.current_player))
             print(self.table.deck.table_hand)
 
@@ -151,6 +159,8 @@ class Game():
                 self.current_player = 0
                 self.passes += 1
 
+            if len(self.current_player_lst) <= 1:
+                break
 
         for i in self.current_player_lst:
             self.money_exchange(self.current_raise, i)
@@ -158,20 +168,19 @@ class Game():
 
         print(self.table.player_lst)
 
-        self.dealer += 1
-        if self.dealer + 1 <= len(self.table.player_lst):
-            self.dealer += 1
-        else:
-            self.dealer = 0
-
-        self.current_raise = 0
-        self.current_raise_player = len(self.current_player_lst) + 1
-
-        self.current_player = self.dealer + 1
-
         self.current_play += 1
         if self.current_play > 0:
             self.blinds = 0
+
+        self.current_raise = 0
+        if self.dealer + 1 <= len(self.current_player_lst):
+            self.current_raise_player = self.dealer + 1
+            self.current_player = self.dealer + 1
+        else:
+            self.current_raise_player = 0
+            self.current_player = 0
+
+        self.passes = 0
 
 
 def main():
@@ -179,19 +188,44 @@ def main():
 
     current_game = Game(num_players)
 
-    current_game.round()
+    while len(current_game.current_player_lst) > 1:
 
-    current_game.table.deck.deal_flop()
+        if current_game.current_play == 0:
+            current_game.round()
+        elif current_game.current_play == 1:
+            current_game.table.deck.deal_flop()
+            current_game.round()
+        elif current_game.current_play == 2:
+            current_game.table.deck.deal_turn()
+            current_game.round()
+        elif current_game.current_play == 3:
+            current_game.table.deck.deal_river()
+            current_game.round()
 
-    current_game.round()
+    current_game.end_round()
 
-    current_game.table.deck.deal_turn()
-
-    current_game.round()
-
-    current_game.table.deck.deal_river()
-
-    current_game.round()
+    # current_game.round()
+    #
+    # if len(current_game.current_player_lst) <= 1:
+    #     current_game.end_round()
+    #
+    # current_game.table.deck.deal_flop()
+    #
+    # current_game.round()
+    # if len(current_game.current_player_lst) <= 1:
+    #     current_game.end_round()
+    #
+    # current_game.table.deck.deal_turn()
+    #
+    # current_game.round()
+    # if len(current_game.current_player_lst) <= 1:
+    #     current_game.end_round()
+    #
+    # current_game.table.deck.deal_river()
+    #
+    # current_game.round()
+    # if len(current_game.current_player_lst) <= 1:
+    #     current_game.end_round()
 
 #Game(1)
 main()
