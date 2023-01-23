@@ -1,5 +1,6 @@
 import tkinter as tk
 import functools as ft
+from PIL import ImageTk, Image
 
 
 class setup_frame:
@@ -8,7 +9,7 @@ class setup_frame:
     def __init__(self, parent):
 
         self.parent = parent
-        self.setup_frame = tk.Frame(parent, bg="#385c89")
+        self.setup_frame = tk.Frame(self.parent, bg="#385c89")
         self.setup_frame.grid(row=0, column=0, sticky="news")
 
         self.num_players = tk.IntVar(self.setup_frame)
@@ -17,8 +18,8 @@ class setup_frame:
         self.chip_count = tk.IntVar(self.setup_frame)
         self.blind_amount = tk.IntVar(self.setup_frame)
 
-        parent.rowconfigure(0,weight = 1)
-        parent.columnconfigure(0, weight = 1)
+        self.parent.rowconfigure(0,weight = 1)
+        self.parent.columnconfigure(0, weight = 1)
 
         self.bg_label = tk.Label(self.setup_frame, relief=tk.SUNKEN, bg="#cccccc")
         self.bg_label.grid(row=0, column=10, sticky="news", columnspan=10, rowspan=20)
@@ -135,12 +136,23 @@ class game_frame:
     def __init__(self, parent):
         print("game frame go")
 
-        self.game_frame = tk.Frame(parent, bg="#385c89")
+        self.parent = parent
+
+        self.game_frame = tk.Frame(self.parent, bg="#385c89")
         self.game_frame.grid(row=0, column=0, sticky="news")
 
-        parent.rowconfigure(0, weight=1)
-        parent.columnconfigure(0, weight=1)
+        self.parent.rowconfigure(0, weight=1)
+        self.parent.columnconfigure(0, weight=1)
 
+        self.community_cards_bg = tk.Label(self.game_frame,  relief=tk.SUNKEN, bg="#cccccc")
+        self.community_cards_bg.grid(row = 0,column = 0,rowspan = 5,columnspan=20,sticky = "news")
+        self.community_cards_header = tk.Label(self.game_frame,text = "Community cards:",bg = "#ef7359")
+        self.community_cards_header.grid(row = 0,column = 0,rowspan = 2,columnspan = 3,sticky = "news")
+
+        img1 = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((75, 150), Image.Resampling.LANCZOS))
+        self.community_card1 = tk.Label(self.game_frame, image = img1,bg = "#cccccc")
+        self.community_card1.image = img1
+        self.community_card1.grid(row = 0,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
 
         for i in range(0, 20):
             self.game_frame.rowconfigure(i, weight=1)
@@ -151,7 +163,7 @@ class game_frame:
 def main():
     root = tk.Tk()
     root.geometry("900x800")
-    frame1 = setup_frame(root)
+    frame1 = game_frame(root)
     root.mainloop()
 
 main()
