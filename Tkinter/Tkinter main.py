@@ -17,6 +17,7 @@ class setup_frame:
         self.player_name = tk.StringVar(self.setup_frame,"")
         self.chip_count = tk.IntVar(self.setup_frame)
         self.blind_amount = tk.IntVar(self.setup_frame)
+        self.player_lst = []
 
         self.parent.rowconfigure(0,weight = 1)
         self.parent.columnconfigure(0, weight = 1)
@@ -70,6 +71,7 @@ class setup_frame:
     def player_name_fn(self, i,entry):
         print(f"You pressed button {i} and the name was {entry.get()}")
         name = entry.get()
+        self.player_lst.append(name)
         if i % 2 == 0:
             column = 15
         else:
@@ -126,17 +128,22 @@ class setup_frame:
 
     def go_to_game_frame(self):
 
-        frame2 = game_frame(self.parent)
+        frame2 = game_frame(self.parent,self.blind_amount,self.chip_count,self.player_lst)
         self.setup_frame.destroy()
 
 
 
 class game_frame:
 
-    def __init__(self, parent):
-        print("game frame go")
+    def __init__(self, parent, blind_amount,chip_count,player_lst):
 
         self.parent = parent
+
+        self.blind_amount = blind_amount
+        self.player_lst = {}
+        for i in player_lst:
+            self.player_lst[i] = int(chip_count)
+        print(self.player_lst)
 
         self.game_frame = tk.Frame(self.parent, bg="#385c89")
         self.game_frame.grid(row=0, column=0, sticky="news")
@@ -149,10 +156,24 @@ class game_frame:
         self.community_cards_header = tk.Label(self.game_frame,text = "Community cards:",bg = "#ef7359")
         self.community_cards_header.grid(row = 0,column = 0,rowspan = 2,columnspan = 3,sticky = "news")
 
-        img1 = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((75, 150), Image.Resampling.LANCZOS))
-        self.community_card1 = tk.Label(self.game_frame, image = img1,bg = "#cccccc")
-        self.community_card1.image = img1
+        community = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((90, 150), Image.Resampling.LANCZOS))
+        self.community_card1 = tk.Label(self.game_frame, image = community,bg = "#cccccc")
+        self.community_card1.image = community
         self.community_card1.grid(row = 0,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
+        self.community_card2 = tk.Label(self.game_frame, image=community, bg="#cccccc")
+        self.community_card2.image = community
+        self.community_card2.grid(row=0, column=7, sticky="news", rowspan=3, columnspan=2)
+        self.community_card3 = tk.Label(self.game_frame, image=community, bg="#cccccc")
+        self.community_card3.image = community
+        self.community_card3.grid(row=0, column=9, sticky="news", rowspan=3, columnspan=2)
+        self.community_card4 = tk.Label(self.game_frame, image=community, bg="#cccccc")
+        self.community_card4.image = community
+        self.community_card4.grid(row=0, column=11, sticky="news", rowspan=3, columnspan=2)
+        self.community_card5 = tk.Label(self.game_frame, image=community, bg="#cccccc")
+        self.community_card5.image = community
+        self.community_card5.grid(row=0, column=13, sticky="news", rowspan=3, columnspan=2)
+
+
 
         for i in range(0, 20):
             self.game_frame.rowconfigure(i, weight=1)
@@ -163,7 +184,7 @@ class game_frame:
 def main():
     root = tk.Tk()
     root.geometry("900x800")
-    frame1 = game_frame(root)
+    frame1 = setup_frame(root)
     root.mainloop()
 
 main()
