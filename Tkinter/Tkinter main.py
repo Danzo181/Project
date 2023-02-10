@@ -18,6 +18,7 @@ class setup_frame:
         self.chip_count = tk.IntVar(self.setup_frame)
         self.blind_amount = tk.IntVar(self.setup_frame)
         self.player_lst = []
+        self.player_dict = {}
 
         self.parent.rowconfigure(0,weight = 1)
         self.parent.columnconfigure(0, weight = 1)
@@ -128,22 +129,26 @@ class setup_frame:
 
     def go_to_game_frame(self):
 
-        frame2 = game_frame(self.parent,self.blind_amount,self.chip_count,self.player_lst)
+        for i in self.player_lst:
+            self.player_dict[i] = int(self.chip_count.get())
+        self.player_keys = list(self.player_dict.keys())
+        print(self.player_keys)
+
+        frame2 = game_frame(self.parent,self.blind_amount.get(),self.chip_count.get(),self.player_dict,self.player_keys)
         self.setup_frame.destroy()
 
 
 
 class game_frame:
 
-    def __init__(self, parent, blind_amount,chip_count,player_lst):
+    def __init__(self, parent, blind_amount,chip_count,player_lst,player_keys):
 
         self.parent = parent
 
         self.blind_amount = blind_amount
-        self.player_lst = {}
-        for i in player_lst:
-            self.player_lst[i] = int(chip_count)
-        print(self.player_lst)
+        self.chip_count = chip_count
+        self.player_lst = player_lst
+        self.player_keys = player_keys
 
         self.game_frame = tk.Frame(self.parent, bg="#385c89")
         self.game_frame.grid(row=0, column=0, sticky="news")
@@ -151,12 +156,15 @@ class game_frame:
         self.parent.rowconfigure(0, weight=1)
         self.parent.columnconfigure(0, weight=1)
 
+        self.bg = tk.Label(self.game_frame,bg = "#385c89")
+        self.bg.grid(row = 0, column = 0, rowspan = 20, columnspan = 20,sticky = "news")
+
         self.community_cards_bg = tk.Label(self.game_frame,  relief=tk.SUNKEN, bg="#cccccc")
         self.community_cards_bg.grid(row = 0,column = 0,rowspan = 5,columnspan=20,sticky = "news")
         self.community_cards_header = tk.Label(self.game_frame,text = "Community cards:",bg = "#ef7359")
         self.community_cards_header.grid(row = 0,column = 0,rowspan = 2,columnspan = 3,sticky = "news")
 
-        community = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((90, 150), Image.Resampling.LANCZOS))
+        community = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((90, 120), Image.Resampling.LANCZOS))
         self.community_card1 = tk.Label(self.game_frame, image = community,bg = "#cccccc")
         self.community_card1.image = community
         self.community_card1.grid(row = 0,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
@@ -173,18 +181,47 @@ class game_frame:
         self.community_card5.image = community
         self.community_card5.grid(row=0, column=13, sticky="news", rowspan=3, columnspan=2)
 
+        self.action_bg_label = tk.Label(self.game_frame,bg = "#cccccc")
+        self.action_bg_label.grid(row = 6, column = 13, rowspan = 3, columnspan = 5,sticky = "news")
+
+        for i in range(len(player_lst)+1):
+            if i % 2 == 0:
+                row = 16
+            else:
+                row = 11
+
+            if i <= 2:
+                column = 0
+            elif i <= 4:
+                column = 5
+            elif i <= 6:
+                column = 10
+            elif i <= 8:
+                column = 15
+
+            self.player_label = tk.Label(self.game_frame, relief=tk.RAISED, bg="#ef7359")
+            self.player_label.grid(row=row, column=column, sticky="news", columnspan=5, rowspan=4)
+            self.player_name_title = tk.Label(self.game_frame, text="Name:", bg="#ef7359")
+            self.player_name_title.grid(row=row, column=column)
+            self.player_name = tk.Label(self.game_frame, text=f"{self.player_keys[i-1]}", bg="#ef7359")
+            self.player_name.grid(row=row, column=column + 2)
+
+
+
+
 
 
         for i in range(0, 20):
-            self.game_frame.rowconfigure(i, weight=1)
-            self.game_frame.columnconfigure(i, weight=1)
+            self.game_frame.rowconfigure(i, weight=1,minsize = 45)
+            self.game_frame.columnconfigure(i, weight=1,minsize = 30)
 
 
 
 def main():
     root = tk.Tk()
-    root.geometry("900x800")
-    frame1 = setup_frame(root)
+    root.geometry("1000x1000")
+    #frame1 = setup_frame(root)
+    frame2 = game_frame(root,10,1500,{"dan":1500,"seb":1500,"sean":1500,"zack":1500,"joe":1500,"tal":1500,"jack":1500,"jas":1500},["dan","seb","sean","zack","joe","tal","jack","jas"])
     root.mainloop()
 
 main()
