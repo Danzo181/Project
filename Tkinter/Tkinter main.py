@@ -140,7 +140,6 @@ class setup_frame:
 
 
 class game_frame:
-
     def __init__(self, parent, blind_amount,chip_count,player_lst,player_keys):
 
         self.parent = parent
@@ -162,33 +161,50 @@ class game_frame:
         self.community_cards_bg = tk.Label(self.game_frame,  relief=tk.SUNKEN, bg="#cccccc")
         self.community_cards_bg.grid(row = 0,column = 0,rowspan = 5,columnspan=20,sticky = "news")
         self.community_cards_header = tk.Label(self.game_frame,text = "Community cards:",bg = "#ef7359")
-        self.community_cards_header.grid(row = 0,column = 0,rowspan = 2,columnspan = 3,sticky = "news")
+        self.community_cards_header.grid(row = 0,column = 0,rowspan = 2,columnspan = 4,sticky = "news")
 
-        community = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((90, 120), Image.Resampling.LANCZOS))
+        community = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((90, 140), Image.Resampling.LANCZOS))
         self.community_card1 = tk.Label(self.game_frame, image = community,bg = "#cccccc")
         self.community_card1.image = community
-        self.community_card1.grid(row = 0,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
+        self.community_card1.grid(row = 1,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
         self.community_card2 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card2.image = community
-        self.community_card2.grid(row=0, column=7, sticky="news", rowspan=3, columnspan=2)
+        self.community_card2.grid(row=1, column=8,sticky="news", rowspan=3, columnspan=2)
         self.community_card3 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card3.image = community
-        self.community_card3.grid(row=0, column=9, sticky="news", rowspan=3, columnspan=2)
+        self.community_card3.grid(row=1, column=11, sticky="news", rowspan=3, columnspan=2)
         self.community_card4 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card4.image = community
-        self.community_card4.grid(row=0, column=11, sticky="news", rowspan=3, columnspan=2)
+        self.community_card4.grid(row=1, column=14, sticky="news", rowspan=3, columnspan=2)
         self.community_card5 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card5.image = community
-        self.community_card5.grid(row=0, column=13, sticky="news", rowspan=3, columnspan=2)
+        self.community_card5.grid(row=1, column=17, sticky="news", rowspan=3, columnspan=2)
+
+        self.blind_title = tk.Label(self.game_frame,text=f"Blinds: {self.blind_amount}/{self.blind_amount*2}",bg="#ef7359")
+        self.blind_title.grid(row =3,column =0,rowspan=2,columnspan=4,sticky="news")
 
         self.action_bg_label = tk.Label(self.game_frame,bg = "#cccccc")
-        self.action_bg_label.grid(row = 6, column = 13, rowspan = 3, columnspan = 5,sticky = "news")
+        self.action_bg_label.grid(row = 6, column = 13, rowspan = 5, columnspan = 6,sticky = "news")
+        self.action_title = tk.Label(self.game_frame,text="Actions:",bg = "#ef7359")
+        self.action_title.grid(row =5,column=14,rowspan=1,columnspan=3,sticky="news")
+        self.check_btn = tk.Button(self.game_frame,text="Check",bg="#a9a9a9")
+        self.check_btn.grid(row=6,column=14,columnspan=2,sticky="news")
+        self.fold_btn = tk.Button(self.game_frame, text="Fold", bg="#a9a9a9")
+        self.fold_btn.grid(row=8, column=14, columnspan=2, sticky="news")
+        self.raise_btn = tk.Button(self.game_frame, text="raise", bg="#a9a9a9")
+        self.raise_btn.grid(row=10, column=14, columnspan=2, sticky="news")
+        self.call_btn = tk.Button(self.game_frame, text="call", bg="#a9a9a9")
+        self.call_btn.grid(row=7, column=17, columnspan=2, sticky="news")
+        self.all_in_btn = tk.Button(self.game_frame,text="All in",bg="#a9a9a9")
+        self.all_in_btn.grid(row=9,column=17,columnspan=2,sticky="news")
+
+        self.current_player_bg = tk.Label
 
         for i in range(len(player_lst)+1):
             if i % 2 == 0:
                 row = 16
             else:
-                row = 11
+                row = 12
 
             if i <= 2:
                 column = 0
@@ -205,6 +221,10 @@ class game_frame:
             self.player_name_title.grid(row=row, column=column)
             self.player_name = tk.Label(self.game_frame, text=f"{self.player_keys[i-1]}", bg="#ef7359")
             self.player_name.grid(row=row, column=column + 2)
+            self.player_chip_count_title = tk.Label(self.game_frame,text="Chip count:",bg="#ef7359")
+            self.player_chip_count_title.grid(row=row+2,column = column)
+            self.player_chip_count = tk.Label(self.game_frame,text=f"{self.player_lst[self.player_keys[i-1]]}",bg="#ef7359")
+            self.player_chip_count.grid(row=row+2,column=column+2)
 
 
 
@@ -214,6 +234,7 @@ class game_frame:
         for i in range(0, 20):
             self.game_frame.rowconfigure(i, weight=1,minsize = 45)
             self.game_frame.columnconfigure(i, weight=1,minsize = 30)
+
 
 
 
