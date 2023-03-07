@@ -190,9 +190,9 @@ class game_frame:
         self.check_btn.grid(row=6,column=14,columnspan=2,sticky="news")
         self.fold_btn = tk.Button(self.game_frame, text="Fold", bg="#a9a9a9")
         self.fold_btn.grid(row=8, column=14, columnspan=2, sticky="news")
-        self.raise_btn = tk.Button(self.game_frame, text="raise", bg="#a9a9a9")
+        self.raise_btn = tk.Button(self.game_frame, text="Raise", bg="#a9a9a9")
         self.raise_btn.grid(row=10, column=14, columnspan=2, sticky="news")
-        self.call_btn = tk.Button(self.game_frame, text="call", bg="#a9a9a9")
+        self.call_btn = tk.Button(self.game_frame, text="Call", bg="#a9a9a9")
         self.call_btn.grid(row=7, column=17, columnspan=2, sticky="news")
         self.all_in_btn = tk.Button(self.game_frame,text="All in",bg="#a9a9a9")
         self.all_in_btn.grid(row=9,column=17,columnspan=2,sticky="news")
@@ -261,11 +261,14 @@ class game_frame:
         self.community_card5.image = card4
         self.community_card5.grid(row=1, column=17, sticky="news", rowspan=3, columnspan=2)
 
-    def update_players(self):
+    def update_players(self,pot_amount):
+
+        self.pot_amount_title = tk.Label(self.game_frame, text=f"Pot amount: {pot_amount}",bg = "#ef7359")
+        self.pot_amount_title.grid(row = 6,column=10,sticky="news")
 
         for i in range(len(self.player_lst) + 1):
             if i % 2 == 0:
-                row = 16
+                row = 15
             else:
                 row = 12
 
@@ -279,7 +282,7 @@ class game_frame:
                 column = 15
 
             player_label = tk.Label(self.game_frame, relief=tk.RAISED, bg="#ef7359")
-            player_label.grid(row=row, column=column, sticky="news", columnspan=5, rowspan=4)
+            player_label.grid(row=row, column=column, sticky="news", columnspan=5, rowspan=3)
             player_name_title = tk.Label(self.game_frame, text="Name:", bg="#ef7359")
             player_name_title.grid(row=row, column=column)
             player_name = tk.Label(self.game_frame, text=f"{self.player_keys[i - 1]}", bg="#ef7359")
@@ -289,7 +292,9 @@ class game_frame:
             player_chip_count = tk.Label(self.game_frame, text=f"{self.player_lst[self.player_keys[i - 1]]}",bg="#ef7359")
             player_chip_count.grid(row=row + 2, column=column + 2)
 
+
     def update_current_player(self,player,cards):
+
         current_player_bg = tk.Label(self.game_frame,relief=tk.RAISED,bg="#cccccc")
         current_player_bg.grid(row=6,column=1,columnspan=9,rowspan=5,sticky="news")
         current_player_title = tk.Label(self.game_frame,text="Name:",bg="#ef7359")
