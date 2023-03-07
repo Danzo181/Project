@@ -138,7 +138,6 @@ class setup_frame:
         self.setup_frame.destroy()
 
 
-
 class game_frame:
     def __init__(self, parent, blind_amount,chip_count,player_lst,player_keys):
 
@@ -164,21 +163,21 @@ class game_frame:
         self.community_cards_header.grid(row = 0,column = 0,rowspan = 2,columnspan = 4,sticky = "news")
 
         community = ImageTk.PhotoImage(Image.open(str("cards\default1.png")).resize((90, 140), Image.Resampling.LANCZOS))
-        self.community_card1 = tk.Label(self.game_frame, image = community,bg = "#cccccc")
+        self.community_card0 = tk.Label(self.game_frame, image = community,bg = "#cccccc")
+        self.community_card0.image = community
+        self.community_card0.grid(row = 1,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
+        self.community_card1 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card1.image = community
-        self.community_card1.grid(row = 1,column = 5,sticky = "news",rowspan = 3,columnspan = 2)
+        self.community_card1.grid(row=1, column=8,sticky="news", rowspan=3, columnspan=2)
         self.community_card2 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card2.image = community
-        self.community_card2.grid(row=1, column=8,sticky="news", rowspan=3, columnspan=2)
+        self.community_card2.grid(row=1, column=11, sticky="news", rowspan=3, columnspan=2)
         self.community_card3 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card3.image = community
-        self.community_card3.grid(row=1, column=11, sticky="news", rowspan=3, columnspan=2)
+        self.community_card3.grid(row=1, column=14, sticky="news", rowspan=3, columnspan=2)
         self.community_card4 = tk.Label(self.game_frame, image=community, bg="#cccccc")
         self.community_card4.image = community
-        self.community_card4.grid(row=1, column=14, sticky="news", rowspan=3, columnspan=2)
-        self.community_card5 = tk.Label(self.game_frame, image=community, bg="#cccccc")
-        self.community_card5.image = community
-        self.community_card5.grid(row=1, column=17, sticky="news", rowspan=3, columnspan=2)
+        self.community_card4.grid(row=1, column=17, sticky="news", rowspan=3, columnspan=2)
 
         self.blind_title = tk.Label(self.game_frame,text=f"Blinds: {self.blind_amount}/{self.blind_amount*2}",bg="#ef7359")
         self.blind_title.grid(row =3,column =0,rowspan=2,columnspan=4,sticky="news")
@@ -198,9 +197,10 @@ class game_frame:
         self.all_in_btn = tk.Button(self.game_frame,text="All in",bg="#a9a9a9")
         self.all_in_btn.grid(row=9,column=17,columnspan=2,sticky="news")
 
-        self.current_player_bg = tk.Label
+        self.current_player_title = tk.Label(self.game_frame,text="Current player:",bg="#ef7359")
+        self.current_player_title.grid(row = 5,column=1,columnspan=2,sticky = "news")
 
-        for i in range(len(player_lst)+1):
+        for i in range(len(self.player_lst)+1):
             if i % 2 == 0:
                 row = 16
             else:
@@ -228,13 +228,89 @@ class game_frame:
 
 
 
-
-
-
         for i in range(0, 20):
             self.game_frame.rowconfigure(i, weight=1,minsize = 45)
             self.game_frame.columnconfigure(i, weight=1,minsize = 30)
 
+    def deal_flop(self,cards):
+        card0 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[0]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+        card1 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[1]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+        card2 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[2]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+
+        self.community_card0 = tk.Label(self.game_frame, image=card0, bg="#cccccc")
+        self.community_card0.image = card0
+        self.community_card0.grid(row=1, column=5, sticky="news", rowspan=3, columnspan=2)
+        self.community_card1 = tk.Label(self.game_frame, image=card1, bg="#cccccc")
+        self.community_card1.image = card1
+        self.community_card1.grid(row=1, column=8, sticky="news", rowspan=3, columnspan=2)
+        self.community_card2 = tk.Label(self.game_frame, image=card2, bg="#cccccc")
+        self.community_card2.image = card2
+        self.community_card2.grid(row=1, column=11, sticky="news", rowspan=3, columnspan=2)
+
+    def deal_turn(self,cards):
+        card3 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[3]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+
+        self.community_card4 = tk.Label(self.game_frame, image=card3, bg="#cccccc")
+        self.community_card4.image = card3
+        self.community_card4.grid(row=1, column=14, sticky="news", rowspan=3, columnspan=2)
+
+    def deal_river(self,cards):
+        card4 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[4]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+
+        self.community_card5 = tk.Label(self.game_frame, image=card4, bg="#cccccc")
+        self.community_card5.image = card4
+        self.community_card5.grid(row=1, column=17, sticky="news", rowspan=3, columnspan=2)
+
+    def update_players(self):
+
+        for i in range(len(self.player_lst) + 1):
+            if i % 2 == 0:
+                row = 16
+            else:
+                row = 12
+
+            if i <= 2:
+                column = 0
+            elif i <= 4:
+                column = 5
+            elif i <= 6:
+                column = 10
+            elif i <= 8:
+                column = 15
+
+            player_label = tk.Label(self.game_frame, relief=tk.RAISED, bg="#ef7359")
+            player_label.grid(row=row, column=column, sticky="news", columnspan=5, rowspan=4)
+            player_name_title = tk.Label(self.game_frame, text="Name:", bg="#ef7359")
+            player_name_title.grid(row=row, column=column)
+            player_name = tk.Label(self.game_frame, text=f"{self.player_keys[i - 1]}", bg="#ef7359")
+            player_name.grid(row=row, column=column + 2)
+            player_chip_count_title = tk.Label(self.game_frame, text="Chip count:", bg="#ef7359")
+            player_chip_count_title.grid(row=row + 2, column=column)
+            player_chip_count = tk.Label(self.game_frame, text=f"{self.player_lst[self.player_keys[i - 1]]}",bg="#ef7359")
+            player_chip_count.grid(row=row + 2, column=column + 2)
+
+    def update_current_player(self,player,cards):
+        current_player_bg = tk.Label(self.game_frame,relief=tk.RAISED,bg="#cccccc")
+        current_player_bg.grid(row=6,column=1,columnspan=9,rowspan=5,sticky="news")
+        current_player_title = tk.Label(self.game_frame,text="Name:",bg="#ef7359")
+        current_player_title.grid(row=7,column=2,sticky="news")
+        current_player_name = tk.Label(self.game_frame,text=f"{self.player_keys[player]}",bg="#ef7359")
+        current_player_name.grid(row=7,column=3,sticky="news")
+        current_player_chip_count_title = tk.Label(self.game_frame,text="Chip count:",bg="#ef7359")
+        current_player_chip_count_title.grid(row=9,column=2,sticky="news")
+        current_player_chip_count= tk.Label(self.game_frame,text=f"{self.player_lst[self.player_keys[player]]}",bg="#ef7359")
+        current_player_chip_count.grid(row=9,column=3,sticky="news")
+
+        card1 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[0]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+        card2 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[1]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
+
+
+        current_card1 = tk.Label(self.game_frame, image=card1, bg="#cccccc")
+        current_card1.image = card1
+        current_card1.grid(row=7, column=5, sticky="news", rowspan=3, columnspan=2)
+        current_card2 = tk.Label(self.game_frame, image=card2, bg="#cccccc")
+        current_card2.image = card2
+        current_card2.grid(row=7, column=7, sticky="news", rowspan=3, columnspan=2)
 
 
 
@@ -243,6 +319,8 @@ def main():
     root.geometry("1000x1000")
     #frame1 = setup_frame(root)
     frame2 = game_frame(root,10,1500,{"dan":1500,"seb":1500,"sean":1500,"zack":1500,"joe":1500,"tal":1500,"jack":1500,"jas":1500},["dan","seb","sean","zack","joe","tal","jack","jas"])
+    frame2.deal_flop(["Ace of Clubs","Ace of Diamonds","Ace of Hearts"])
+    frame2.update_current_player(0,["King of Clubs","King of Diamonds"])
     root.mainloop()
 
 main()
