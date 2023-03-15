@@ -323,7 +323,7 @@ def main():
     root = tk.Tk()
     root.geometry("1000x1000")
     #frame1 = setup_frame(root)
-    frame2 = game_frame(root,10,1500,{"dan":1500,"seb":1500,"sean":1500,"zack":1500,"joe":1500,"tal":1500,"jack":1500,"jas":1500},["dan","seb","sean","zack","joe","tal","jack","jas"])
+    frame2 = game_frame(root,10,1500,{"p1":1500,"p2":1500,"p3":1500,"p4":1500,"p5":1500,"p6":1500,"p7":1500,"p8":1500},["p1","p2","p3","p4","p5","p6","p7","p8"])
     frame2.deal_flop(["Ace of Clubs","Ace of Diamonds","Ace of Hearts"])
     frame2.update_current_player(0,["King of Clubs","King of Diamonds"])
     root.mainloop()
