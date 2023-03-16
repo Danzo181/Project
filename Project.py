@@ -568,12 +568,14 @@ class game_frame:
 def setup():
     root = tk.Tk()
     root.geometry("1000x1000")
-    #frame1 = setup_frame(root)
-    game = Game(8, 10,{"p1":1500,"p2":1500,"p3":1500,"p4":1500,"p5":1500,"p6":1500,"p7":1500,"p8":1500}, ["p1","p2","p3","p4","p5","p6","p7","p8"], root,1500)
+    frame1 = setup_frame(root)
     root.mainloop()
 
 setup()
+
+
 #single_round(setup())
+#game = Game(8, 10,{"p1":1500,"p2":1500,"p3":1500,"p4":1500,"p5":1500,"p6":1500,"p7":1500,"p8":1500}, ["p1","p2","p3","p4","p5","p6","p7","p8"], root,1500)
 
 # tab = Table(3)
 # card_KH = Card("K","H")
