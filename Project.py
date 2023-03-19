@@ -63,6 +63,7 @@ class Table():
 
     def __init__(self, hands_num,player_lst,player_keys, bank_amount=1500):
         self.deck = Deck()
+        self.deck.shuffle()
         self.hands = []
         self.hands_num = hands_num
         self.player_lst = player_lst
@@ -75,10 +76,6 @@ class Table():
             for i in range(2):
                 hand.append(self.deck.deal_hand())
             self.hands.append(hand)
-
-        # for i in range(self.hands_num):
-        #     p_name = input("enter player name: ")
-        #     self.player_lst[p_name] = self.bank_amount
 
 
     def show_hand(self, player_num):
@@ -112,7 +109,7 @@ class Game():
 
     def Raise(self, player_num):
 
-        #self.current_raise = int(input("Enter amount to raise by: "))
+
         self.game.Raise()
         self.game.parent.wait_variable(self.game.raise_confirm)
         self.current_raise = self.game.raise_amount.get()
@@ -127,6 +124,10 @@ class Game():
             self.current_raise_player -= 1
         self.current_player -= 1
 
+    def All_in(self, player_num):
+        self.current_raise= self.current_player_lst[self.current_player_keys[player_num]]
+        self.current_raise_player = player_num
+
     def betting(self,play):
 
 
@@ -134,6 +135,8 @@ class Game():
             self.Raise(self.current_player)
         elif play == "f":
             self.Fold(self.current_player)
+        elif play =="a":
+            self.All_in(self.current_player)
         elif play == "c":
             pass
         else:
@@ -159,7 +162,7 @@ class Game():
             print(self.table.show_hand(self.current_player))
             print(self.table.deck.table_hand)
 
-            self.game.update_current_player(self.current_player,self.table.hands[self.current_player])
+            self.game.update_current_player(self.current_player,self.table.hands[self.current_player],self.current_player_lst,self.current_player_keys)
 
             self.game.parent.wait_variable(self.game.action)
 
@@ -455,21 +458,6 @@ class game_frame:
             self.game_frame.rowconfigure(i, weight=1,minsize = 45)
             self.game_frame.columnconfigure(i, weight=1,minsize = 30)
 
-    # def call_check(self):
-    #     self.action.set("c")
-    #     self.betting_complete = True
-    #
-    # def fold(self):
-    #     self.betting_complete = True
-    #     self.action = "f"
-    #
-    # def Raise(self):
-    #     self.betting_complete = True
-    #     self.action = "r"
-    #
-    # def all_in(self):
-    #     self.betting_complete = True
-    #     self.action = "a"
 
     def Raise(self):
         raise_entry_box = tk.Entry(self.game_frame,textvariable=self.raise_amount)
@@ -515,7 +503,7 @@ class game_frame:
 
         for i in range(len(self.player_lst) + 1):
             if i % 2 == 0:
-                row = 15
+                row = 16
             else:
                 row = 12
 
@@ -540,17 +528,17 @@ class game_frame:
             player_chip_count.grid(row=row + 2, column=column + 2)
 
 
-    def update_current_player(self,player,cards):
+    def update_current_player(self,player,cards,current_lst,current_keys):
 
         current_player_bg = tk.Label(self.game_frame,relief=tk.RAISED,bg="#cccccc")
         current_player_bg.grid(row=6,column=1,columnspan=9,rowspan=5,sticky="news")
         current_player_title = tk.Label(self.game_frame,text="Name:",bg="#ef7359")
         current_player_title.grid(row=7,column=2,sticky="news")
-        current_player_name = tk.Label(self.game_frame,text=f"{self.player_keys[player]}",bg="#ef7359")
+        current_player_name = tk.Label(self.game_frame,text=f"{current_keys[player]}",bg="#ef7359")
         current_player_name.grid(row=7,column=3,sticky="news")
         current_player_chip_count_title = tk.Label(self.game_frame,text="Chip count:",bg="#ef7359")
         current_player_chip_count_title.grid(row=9,column=2,sticky="news")
-        current_player_chip_count= tk.Label(self.game_frame,text=f"{self.player_lst[self.player_keys[player]]}",bg="#ef7359")
+        current_player_chip_count= tk.Label(self.game_frame,text=f"{current_lst[current_keys[player]]}",bg="#ef7359")
         current_player_chip_count.grid(row=9,column=3,sticky="news")
 
         card1 = ImageTk.PhotoImage(Image.open(str(f"cards\{cards[0]}.png")).resize((90, 140), Image.Resampling.LANCZOS))
@@ -572,12 +560,3 @@ def setup():
     root.mainloop()
 
 setup()
-
-
-#single_round(setup())
-#game = Game(8, 10,{"p1":1500,"p2":1500,"p3":1500,"p4":1500,"p5":1500,"p6":1500,"p7":1500,"p8":1500}, ["p1","p2","p3","p4","p5","p6","p7","p8"], root,1500)
-
-# tab = Table(3)
-# card_KH = Card("K","H")
-# card_2S = Card("2","S")
-# deck = Deck
